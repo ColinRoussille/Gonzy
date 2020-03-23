@@ -3,7 +3,7 @@ const client = new Discord.Client();
 var prefix = "!";
 var Long = require("long");
 
-client.login("Njg4NDU1ODA2MjQwMjkyODY1.Xm3jmA.px6_Gmqr25iEJVQGqr_-ky0OOls");
+client.login("Njg4NDU1ODA2MjQwMjkyODY1.Xni2Cw.IyKl33khZjMlw7Z87hL82JRgrsM");
 
 /* const getDefaultChannel = (guild) => {
 if(user.guild.channels.has(guild.id))
@@ -52,7 +52,7 @@ client.on("message", message =>{
             .setTitle("*__Liste des commandes accessibles__*")
             .addFields(
                 {name: "Présentation", value: "introduction \n présentation"},
-                {name: "Utilitaire", value: "bot \n help \n liens \n notifications\n vocal"},
+                {name: "Utilitaire", value: "bot \n code \n help \n liens \n notifications\n vocal"},
                 {name: "Cours en ligne", value: "olcourse-allemand \n olcourse-anglais \n olcourse-espagnol \n olcourse-littérature \n olcourse-géo \n olcourse-histoire \n olcourse-maths\n olcourse-philo"},
                 {name: "Questions traitées", value: "questionlittérature \n questionphilo"},
                 {name: "Parcoursup (comptes à rebours)", value: "parcoursup-conf-cab \n parcoursup-end-cab \n parcoursup-sadm-cab \n parcoursup-scompl-cab"},
@@ -345,7 +345,11 @@ client.on("message", message =>{
     return}
 
     if(message.content === prefix + "react-jeux"){
-        message.channel.send("C'est déjà le soir? Je viens juste de me lever moi ! En plus c'est même pas moi qui gère les jeux !")
+        message.channel.send("C'est déjà le soir? Je viens juste de me lever moi ! En plus c'est même pas moi qui gère les jeux !");
+    return}
+
+    if(message.content === prefix + "code"){
+        message.channel.send("J'ai été codé intégralement par Colin Roussille ! Vous pouvez accéder à mon code juste ici : https://github.com/ColinRoussille/Gonzy");
     return}
 
     if(message.content === "Gonzy !"){
