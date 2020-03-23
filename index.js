@@ -3,7 +3,7 @@ const client = new Discord.Client();
 var prefix = "!";
 var Long = require("long");
 
-client.login("Njg4NDU1ODA2MjQwMjkyODY1.Xni2Cw.IyKl33khZjMlw7Z87hL82JRgrsM");
+client.login([TOKEN]);
 
 /* const getDefaultChannel = (guild) => {
 if(user.guild.channels.has(guild.id))
