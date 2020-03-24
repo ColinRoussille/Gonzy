@@ -55,7 +55,7 @@ client.on("message", message =>{
                 {name: "Utilitaire", value: "bot \n code \n help \n liens \n notifications\n vocal"},
                 {name: "Cours en ligne", value: "olcourse-allemand \n olcourse-anglais \n olcourse-espagnol \n olcourse-littérature \n olcourse-géo \n olcourse-histoire \n olcourse-maths\n olcourse-philo"},
                 {name: "Questions traitées", value: "questionlittérature \n questionphilo"},
-                {name: "Parcoursup (comptes à rebours)", value: "parcoursup-conf-cab \n parcoursup-end-cab \n parcoursup-sadm-cab \n parcoursup-scompl-cab"},
+                {name: "Parcoursup (comptes à rebours)", value: "parcoursup-conf-cab \n parcoursup-fin-cab \n parcoursup-sadm-cab \n parcoursup-scompl-cab"},
                 {name: "Discussion", value: "liste complète dans *!react* et certaines sont cachées"},
             )
             .setFooter("La TL sur Discord | BotLittéraire | !help")
@@ -242,6 +242,7 @@ client.on("message", message =>{
             .setAuthor(message.author.username + " demande à pouvoir réagir !")
             .setTitle("**__Les Réactions__**")
             .addFields(
+                {name: "bot-vie", value: "Les robots aussi voient le temps passer"},
                 {name: "react-censure", value: "Pour conserver la belle langue française"},
                 {name: "react-choqué", value: "Quand vous êtes horrifiés"},
                 {name: "react-choquédéçu", value: "Vous avez été choqué et déçus... (*vous croyez quoi?*)"},
@@ -263,6 +264,7 @@ client.on("message", message =>{
                 {name: "react-vrai", value: "Quand vous confirmez"},
                 {name: "react-whynot", value: "Pourquoi pas ?"},
                 {name: "react-wow", value: "Quand vous êtes impressionnés"},
+                {name: "rps", value: "*+ votre choix* pour jouer ! *Le robot ne triche pas, son résultat est généré aléatoirement en même temps que le votre*"},
             )
             .setFooter("La TL sur Discord | BotLittéraire | !help")
         message.channel.send(ReactEmbed);
@@ -349,7 +351,7 @@ client.on("message", message =>{
     return}
 
     if(message.content === prefix + "code"){
-        message.channel.send("J'ai été codé intégralement par Colin Roussille ! Vous pouvez accéder à mon code juste ici : https://github.com/ColinRoussille/Gonzy");
+        message.channel.send("J'ai été codé intégralement par Colin Roussille ! Vous pouvez accéder à mon code juste ici : https://github.com/ColinRoussille/Gonzy (code pur dans le fichier index.js)");
     return}
 
     if(message.content === "Gonzy !"){
@@ -480,7 +482,7 @@ client.on("message", message =>{
     compte_a_rebours();
     return}
 
-    if(message.content === prefix + "parcoursup-end-cab"){
+    if(message.content === prefix + "parcoursup-fin-cab"){
         function compte_a_rebours(){
             var date_actuelle = new Date();
             var date_evenement = new Date("Jul 17 23:59:59 2020");
@@ -498,6 +500,58 @@ client.on("message", message =>{
         // var actualisation = setTimeout(compte_a_rebours(date_evenement), 1000);
         }
     compte_a_rebours();
+    return}
+
+    if(message.content === prefix + "bot-vie"){
+        function compte_a_rebours(){
+            var date_actuelle = new Date();
+            var date_evenement = new Date("Mar 13 22:30:00 2020");
+            var total_secondes = -(date_evenement - date_actuelle) / 1000;
+            var prefixdate = "Vous voulez savoir mon âge ? Il est d'environ ";
+            if (total_secondes < 0){
+                total_secondes = Math.abs(total_secondes);
+                message.channel.send(prefixdate + total_secondes);
+            return}
+            var jours = Math.floor(total_secondes / (60 * 60 * 24));
+            var heures = Math.floor((total_secondes - (jours * 60 * 60 * 24)) / (60 * 60));
+            var minutes = Math.floor((total_secondes - ((jours * 60 * 60 * 24 + heures * 60 * 60))) / 60);
+            var secondes = Math.floor(total_secondes - ((jours * 60 * 60 * 24 + heures * 60 * 60 + minutes * 60)));
+        message.channel.send(prefixdate + jours + ' jours ' + heures + ' heures ' + minutes + ' minutes et ' + secondes + ' secondes. Je suis vieux, ma mémoire flanche un peu');
+        // var actualisation = setTimeout(compte_a_rebours(date_evenement), 1000);
+        }
+    compte_a_rebours();
+    return}
+
+    const args = message.content.slice(prefix.length).trim().split(/ +/g);
+    var commande = args.shift().toLowerCase();
+    if (commande === 'rps') {
+        let replies = ['rock', 'paper', 'scissors'];
+        let result = Math.floor((Math.random() * replies.length));
+
+        let uReply = args[0];
+        if (!uReply) return message.channel.send(`Jouez avec une de ces réponses : \`${replies.join(', ')}\``);
+        if (!replies.includes(uReply)) return message.channel.send(`Seulement ces réponses sont accéptées : \`${replies.join(', ')}\``);
+
+        if (replies[result] === uReply) {
+            console.log(replies[result]);
+            message.channel.send(replies[result]);
+            return message.channel.send('Nous avons choisi la même chose !');
+        } else if (uReply === 'rock') {
+            console.log(replies[result]);
+            message.channel.send(replies[result]);
+            if (replies[result] === 'paper') return message.channel.send('J\'ai gagné !');
+            else return message.channel.send('Tu as gagné !');
+        } else if (uReply === 'scissors') {
+            console.log(replies[result]);
+            message.channel.send(replies[result]);
+            if (replies[result] === 'rock') return message.channel.send('J\'ai gagné !');
+            else return message.channel.send('Tu as gagné !');
+        } else if (uReply === 'paper') {
+            console.log(replies[result]);
+            message.channel.send(replies[result]);
+            if (replies[result] === 'scissors') return message.channel.send('J\'ai gagné !');
+            else return message.channel.send('Tu as gagné !');
+        }
     return}
 
 });
