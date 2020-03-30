@@ -2,8 +2,13 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 var prefix = "!";
 var Long = require("long");
+const trim = (str, max) => ((str.length > max) ? `${str.slice(0, max - 3)}...` : str);
+var apiai = require('apiai');
+var config = require('./config');
+var app = apiai(config.Dialogflow);
+console.log(config);
 
-client.login([TOKEN]);
+client.login(config.Discord);
 
 /* const getDefaultChannel = (guild) => {
 if(user.guild.channels.has(guild.id))
@@ -26,23 +31,42 @@ if(user.guild.channels.has(guild.id))
         .setColor("#58df22")
         .setAuthor(user.user.username, user.user.displayAvatarURL)
         .setDescription(":wave: Bienvenue " + user + " sur le serveur " + user.guild.name + " ! Tapez **!intro** dans le fil de discussion pour avoir plus d'infos")
-        .setFooter("La TL sur Discord | BotLittéraire")
+        .setFooter("La TL sur Discord | Gonzy")
     channel.send(joinEmbed)
 
 }); */
 
 
-client.on("guildMemberRemove", user =>{
+/*client.on("guildMemberRemove", user =>{
     channel.send("Hmm... " + user.user.username + " est parti(e) du serveur !")
-});
+});**/
 
 client.on("ready", () => {
     client.user.setStatus("online");
-    client.user.setActivity("les élèves | AIDE", {type: "LISTENING"});
+    client.user.setActivity("les élèves | !help", {type: "LISTENING"});
+});
+client.once('ready', () => {
+	console.log('Ready!');
 });
 
 client.on("message", message =>{
     if(!message.guild) return
+    if(message.author.bot) return;
+
+    if(message.content === "Gonzy !"){
+        message.channel.send("Quoi ?! Qu'ai-je fait? Non ! Je suis innocent !");
+    return}
+
+    if(message.content === "ptdr t ki?"){
+        message.channel.send("Aïe ! Ça tire à balles réelles... [Calme toi " + message.author.username + " !]");
+    return}
+
+    if(message.content.startsWith("oof") && message.author.username != "Gonzy"){
+        message.react("😒")
+        message.channel.send("Aïe... Coup dur pour Guillaume...");
+    return}
+
+    if(!message.content.startsWith(prefix)) return;
 
 
     if(message.content === prefix + "help"){
@@ -58,7 +82,7 @@ client.on("message", message =>{
                 {name: "Parcoursup (comptes à rebours)", value: "parcoursup-conf-cab \n parcoursup-fin-cab \n parcoursup-sadm-cab \n parcoursup-scompl-cab"},
                 {name: "Discussion", value: "liste complète dans *!react* et certaines sont cachées"},
             )
-            .setFooter("La TL sur Discord | BotLittéraire | !help")
+            .setFooter("La TL sur Discord | Gonzy | !help")
         message.channel.send(HelpEmbed);
     return}
 
@@ -73,7 +97,7 @@ client.on("message", message =>{
             .setColor("#58df22")
             .setAuthor(message.author.username + " demande à ce que le serveur lui soit présenté")
             .setDescription(":wave: Bienvenue " + message.author.username + " sur le serveur ! Tapez **!présentation** dans le fil de discussion pour avoir plus d'infos")
-            .setFooter("La TL sur Discord | BotLittéraire | !help")
+            .setFooter("La TL sur Discord | Gonzy | !help")
         message.channel.send(joinEmbed);
     return}
 
@@ -84,7 +108,7 @@ client.on("message", message =>{
             .setAuthor(message.author.username + " a besoin d'une petite présentation")
             .setTitle("*__Aide à la prise en main de Discord__*")
             .setDescription("**Discord** est un logiciel de communication qui organise les conversations sous forme de **salons**, accessibles selon des **rôles**. \n Vous êtes ici sur le serveur Discord *privé* de la Terminale L de Saint-Stanislas. \n Vous trouverez dans le menu à gauche tous les salons accessibles par un simple clic. Ces salons peuvent être textuels ou vocaux, donc selectionnez bien selon *votre* besoin de communication. \n Si vous souhaitez parler à une personne en particulier ou à un cours, identifier le avec le signe @ suivi du nom de la personne ou du groupe visé. Le @ suivi de *everyone* permet de notifier tout le monde.\n Pour __toute autre demande__, identifiez les responsables ( @administrteur @modérateur et @gérant ). Vous pouvez aussi accéder à la liste des commandes avec la commande **!help**. \n En plus des salons par matières, vous pouvez discuter sur #questions pour des questions en tous genres, sur #actualités pour parler du CoVid-19 et sur #général pour des discussions sur des sujets ne rentrant pa dans les autres salons.\n **Lisez bien le #reglement avant de continuer sur le serveur**")
-            .setFooter("La TL sur Discord | BotLittéraire | !help")
+            .setFooter("La TL sur Discord | Gonzy | !help")
         message.channel.send(IntroEmbed);
     return}
 
@@ -106,7 +130,7 @@ client.on("message", message =>{
                 {name: "Coordonées e-mail des Professeurs", value: "-Mr Cailloux : dcailloux@ststanislas.net \n -Mme Pinon : gpinon@ststanislas.net \n -Mr Ternon : lternon66@gmail.com \n -Mr Ferec : fferec@ststanislas.net \n -Mme Gauthier : missgauthierenglish@gmail.com \n -Mme Kerleo-Colin : fkerleo@ststanislas.net \n -Mme Gabet : gabetartsp@gmail.com \n -Mme Bardon : lauriane.bardon@hotmail.fr \n -Mr Drahonnet : ddrahonnet@ststanislas.net \n -Mme Hamon : sylviehamon4@gmail.com"},
             )
             .setThumbnail("https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/The.Matrix.glmatrix.2.png/268px-The.Matrix.glmatrix.2.png")
-            .setFooter("La TL sur Discord | BotLittéraire | !help")
+            .setFooter("La TL sur Discord | Gonzy | !help")
         message.channel.send(LinkEmbed);
     return}
 
@@ -116,7 +140,7 @@ client.on("message", message =>{
             .setAuthor(message.author.username + " demande de l'aide de philosophie en ligne !")
             .setTitle("**__Le cours demandé__**")
             .setURL("https://www.schoolmouv.fr/terminale-l/philosophie")
-            .setFooter("La TL sur Discord | BotLittéraire | !help")
+            .setFooter("La TL sur Discord | Gonzy | !help")
         message.channel.send(OlcoursephiloEmbed);
     return}
 
@@ -126,7 +150,7 @@ client.on("message", message =>{
             .setAuthor(message.author.username + " demande de l'aide de mathématiques en ligne !")
             .setTitle("**__Le cours demandé__**")
             .setURL("https://www.schoolmouv.fr/terminale-l/mathematiques")
-            .setFooter("La TL sur Discord | BotLittéraire | !help")
+            .setFooter("La TL sur Discord | Gonzy | !help")
         message.channel.send(OlcoursemathsEmbed);
     return}
 
@@ -136,7 +160,7 @@ client.on("message", message =>{
             .setAuthor(message.author.username + " demande de l'aide de géographie en ligne !")
             .setTitle("**__Le cours demandé__**")
             .setURL("https://www.schoolmouv.fr/terminale-l/geographie")
-            .setFooter("La TL sur Discord | BotLittéraire | !help")
+            .setFooter("La TL sur Discord | Gonzy | !help")
         message.channel.send(OlcoursegeoEmbed);
     return}
 
@@ -146,7 +170,7 @@ client.on("message", message =>{
             .setAuthor(message.author.username + " demande de l'aide de histoire en ligne !")
             .setTitle("**__Le cours demandé__**")
             .setURL("https://www.schoolmouv.fr/terminale-l/histoire")
-            .setFooter("La TL sur Discord | BotLittéraire | !help")
+            .setFooter("La TL sur Discord | Gonzy | !help")
         message.channel.send(OlcoursehistoireEmbed);
     return}
 
@@ -156,7 +180,7 @@ client.on("message", message =>{
             .setAuthor(message.author.username + " demande de l'aide de littérature en ligne !")
             .setTitle("**__Le cours demandé__**")
             .setURL("https://www.schoolmouv.fr/terminale-l/francais")
-            .setFooter("La TL sur Discord | BotLittéraire | !help")
+            .setFooter("La TL sur Discord | Gonzy | !help")
         message.channel.send(OlcourselitteratureEmbed);
     return}
 
@@ -166,7 +190,7 @@ client.on("message", message =>{
             .setAuthor(message.author.username + " demande de l'aide d'anglais en ligne !")
             .setTitle("**__Le cours demandé__**")
             .setURL("https://www.schoolmouv.fr/terminale-l/anglais")
-            .setFooter("La TL sur Discord | BotLittéraire | !help")
+            .setFooter("La TL sur Discord | Gonzy | !help")
         message.channel.send(OlcourseanglaisEmbed);
     return}
 
@@ -176,7 +200,7 @@ client.on("message", message =>{
             .setAuthor(message.author.username + " demande de l'aide d'espagnol en ligne !")
             .setTitle("**__Le cours demandé__**")
             .setURL("https://www.schoolmouv.fr/terminale-l/espagnol")
-            .setFooter("La TL sur Discord | BotLittéraire | !help")
+            .setFooter("La TL sur Discord | Gonzy | !help")
         message.channel.send(OlcourseespagnolEmbed);
     return}
 
@@ -186,7 +210,7 @@ client.on("message", message =>{
             .setAuthor(message.author.username + " demande de l'aide d'allemand en ligne !")
             .setTitle("**__Le cours demandé__**")
             .setURL("https://www.schoolmouv.fr/terminale-l/allemand")
-            .setFooter("La TL sur Discord | BotLittéraire | !help")
+            .setFooter("La TL sur Discord | Gonzy | !help")
         message.channel.send(OlcourseallemandEmbed);
     return}
 
@@ -196,7 +220,7 @@ client.on("message", message =>{
             .setAuthor(message.author.username + " demande de l'aide pour ses notifications !")
             .setTitle("**__La méthode__**")
             .setDescription("En bas à gauche de votre écran vous pouvez voir votre photo de profil. Ici, vous pouvez cliquer sur le petit rond à coté et paramettrer le statut de votre choix. \n **En ligne** envoie toutes les notifications et **Ne pas déranger** n'en envoie aucune, si vous ne voulez pas être dérangés. \n Vous pouvez accéder à une configuration plus personnalisée en allant dans les paramètres du serveur ou de l'utilisateur.")
-            .setFooter("La TL sur Discord | BotLittéraire | !help")
+            .setFooter("La TL sur Discord | Gonzy | !help")
         message.channel.send(OlcourseallemandEmbed);
     return}
     
@@ -211,7 +235,7 @@ client.on("message", message =>{
                 {name: "Salons vocaux", value: "Rejoignez un salon vocal en cliquant sur son nom à gauche, quittez le en cliquant sur le symbole raccrocher"},
                 {name: "Cours", value: "Pour les cours, veillez à être en *push-to-talk* et à respeccter le temps de parole de chacun, en gardant à l'esprit que le professeur est prioritaire"},
             )
-            .setFooter("La TL sur Discord | BotLittéraire | !help")
+            .setFooter("La TL sur Discord | Gonzy | !help")
             .setThumbnail("https://images-eu.ssl-images-amazon.com/images/I/513ldgv3aVL.png")
         message.channel.send(VocalEmbed);
     return}
@@ -222,7 +246,7 @@ client.on("message", message =>{
             .setAuthor(message.author.username + " demande la question traitée !")
             .setTitle("**__Question__**")
             .setDescription("Pourquoi s’intéresser au passé ?")
-            .setFooter("La TL sur Discord | BotLittéraire | !help")
+            .setFooter("La TL sur Discord | Gonzy | !help")
         message.channel.send(QuestionphiloEmbed);
     return}
 
@@ -231,8 +255,8 @@ client.on("message", message =>{
             .setColor("jd61t8")
             .setAuthor(message.author.username + " demande la question traitée !")
             .setTitle("**__Question__**")
-            .setDescription("En quoi le personnage de Dona Sol est-il un personnage central dans la pièce? Pensez au sens du nom en espagnol")
-            .setFooter("La TL sur Discord | BotLittéraire | !help")
+            .setDescription("Peut-on considérer Hernani comme l’archétype du héros romantique?")
+            .setFooter("La TL sur Discord | Gonzy | !help")
         message.channel.send(QuestionlitteratureEmbed);
     return}
 
@@ -243,6 +267,7 @@ client.on("message", message =>{
             .setTitle("**__Les Réactions__**")
             .addFields(
                 {name: "bot-vie", value: "Les robots aussi voient le temps passer"},
+                {name: "play", value: "Suivre d'une URL Youtube pour lancer un morceau de musique dans votre canal vocal ! "},
                 {name: "react-censure", value: "Pour conserver la belle langue française"},
                 {name: "react-choqué", value: "Quand vous êtes horrifiés"},
                 {name: "react-choquédéçu", value: "Vous avez été choqué et déçus... (*vous croyez quoi?*)"},
@@ -265,8 +290,9 @@ client.on("message", message =>{
                 {name: "react-whynot", value: "Pourquoi pas ?"},
                 {name: "react-wow", value: "Quand vous êtes impressionnés"},
                 {name: "rps", value: "*+ votre choix* pour jouer ! *Le robot ne triche pas, son résultat est généré aléatoirement en même temps que le votre*"},
+                {name: "rpshelp", value: "Si vous n'êtes pas familiers avec ce jeu !"},
             )
-            .setFooter("La TL sur Discord | BotLittéraire | !help")
+            .setFooter("La TL sur Discord | Gonzy | !help")
         message.channel.send(ReactEmbed);
     return}
 
@@ -319,11 +345,15 @@ client.on("message", message =>{
     return}
 
     if(message.content === prefix + "react-oof"){
-        message.channel.send("Aïe... Coup dur pour Guillaume...");
+        message.channel.send("Aïe... Coup dur pour Guillaume...").then(sentMessage => {
+            sentMessage.react("😒")
+        })
     return}
 
     if(message.content === prefix + "react-rire"){
-        message.channel.send("Hahaha, super drôle, j'ai failli griller un fusible :joy:");
+        message.channel.send("Hahaha, super drôle, j'ai failli griller un fusible :joy:").then(sentMessage => {
+            sentMessage.react("😂")
+        })
     return}
 
     if(message.content === prefix + "react-np"){
@@ -354,70 +384,58 @@ client.on("message", message =>{
         message.channel.send("J'ai été codé intégralement par Colin Roussille ! Vous pouvez accéder à mon code juste ici : https://github.com/ColinRoussille/Gonzy (code pur dans le fichier index.js)");
     return}
 
-    if(message.content === "Gonzy !"){
-        message.channel.send("Quoi ?! Qu'ai-je fait? Non ! Je suis innocent !");
-    return}
-
-    if(message.content === "ptdr t ki?"){
-        message.channel.send("Aïe ! Ça tire à balles réelles... [Calme toi " + message.author.username + " !]");
-    return}
-
-    if(message.content.startsWith("oof") && message.author.username != "BotLittéraire"){
-        message.channel.send("Aïe... Coup dur pour Guillaume...");
-    return}
-
     const commande1 = "Salut "
     const commande2 = "salut "
-    if((message.content.startsWith(commande1) || message.content.startsWith(commande2)) && message.author.username != "BotLittéraire"){
+    if((message.content.startsWith(commande1) || message.content.startsWith(commande2)) && message.author.username != "Gonzy"){
         var repcom = "Bonjour " + message.content.substring(commande1.length)
         message.channel.send(repcom);
     return}
 
     const commande3 = "Yo "
     const commande4 = "yo "
-    if((message.content.startsWith(commande3) || message.content.startsWith(commande4)) && message.author.username != "BotLittéraire"){
+    if((message.content.startsWith(commande3) || message.content.startsWith(commande4)) && message.author.username != "Gonzy"){
         var repcom = "Yo " + message.content.substring(commande3.length) + " ! Ça va?"
         message.channel.send(repcom);
     return}
 
     var commande = "react-merci "
-    if(message.content.startsWith(prefix + commande) && (message.content.length - commande.length != 0) && message.author.username != "BotLittéraire"){
+    if(message.content.startsWith(prefix + commande) && (message.content.length - commande.length != 0) && message.author.username != "Gonzy"){
         var repcom = "Oooh ! " + message.author.username + " remercie chaleureusement " + message.content.substring(commande.length) + " ! :pray:"
         message.channel.send(repcom);
     return}
 
     var commande = "react-gg "
-    if(message.content.startsWith(prefix + commande) && (message.content.length - commande.length != 0) && message.author.username != "BotLittéraire"){
+    if(message.content.startsWith(prefix + commande) && (message.content.length - commande.length != 0) && message.author.username != "Gonzy"){
         var repcom = "Bien joué " + message.content.substring(commande.length) + " ! C'était pas si simple !"
         message.channel.send(repcom);
     return}
 
     var commande = "react-intellect "
-    if(message.content.startsWith(prefix + commande) && (message.content.length - commande.length != 0) && message.author.username != "BotLittéraire"){
+    if(message.content.startsWith(prefix + commande) && (message.content.length - commande.length != 0) && message.author.username != "Gonzy"){
         var repcom = "Psst... " + message.author.username + " pense que " + message.content.substring(commande.length) + " es intelligent(e) mais exploite un robot pour le dire, ce qui n'est pas super ethique..."
         message.channel.send(repcom);
     return}
 
     var commande = "react-mindblown "
-    if(message.content.startsWith(prefix + commande) && (message.content.length - commande.length != 0) && message.author.username != "BotLittéraire"){
+    if(message.content.startsWith(prefix + commande) && (message.content.length - commande.length != 0) && message.author.username != "Gonzy"){
         var repcom = "On est bien d'accord que le raisonnement de " + message.content.substring(commande.length) + " était tout simplement exeptionnel?"
         message.channel.send(repcom);
     return}
 
     var commande = "react-np "
-    if(message.content.startsWith(prefix + commande) && (message.content.length - commande.length != 0) && message.author.username != "BotLittéraire"){
+    if(message.content.startsWith(prefix + commande) && (message.content.length - commande.length != 0) && message.author.username != "Gonzy"){
         var repcom = "Aucun problème, " + message.content.substring(commande.length) + ", pas de pression :joy:"
         message.channel.send(repcom);
     return}
 
     var commande = "react-nope "
-    if(message.content.startsWith(prefix + commande) && (message.content.length - commande.length != 0) && message.author.username != "BotLittéraire"){
+    if(message.content.startsWith(prefix + commande) && (message.content.length - commande.length != 0) && message.author.username != "Gonzy"){
         var repcom = "Bon, " + message.content.substring(commande.length) + ", là, c'est **NON**!"
         message.channel.send(repcom);
     return}
 
     var commande = "anniversaire "
-    if(message.content.startsWith(prefix + commande) && (message.content.length - commande.length != 0) && message.author.username != "BotLittéraire"){
+    if(message.content.startsWith(prefix + commande) && (message.content.length - commande.length != 0) && message.author.username != "Gonzy"){
         var repcom = "Hey, " + message.content.substring(commande.length) + " ! Gonzy n'a pas oublié de te souhaiter un super anniversaire (malgré le confinement) ! " + message.author.username + " non plus d'ailleurs !"
         message.channel.send(repcom);
     return}
@@ -427,7 +445,7 @@ client.on("message", message =>{
             var date_actuelle = new Date();
             var date_evenement = new Date("Apr 2 23:59:59 2020");
             var total_secondes = (date_evenement - date_actuelle) / 1000;
-            var prefixdate = "Les lettres de motivations et confirmations des voeux finissent dans ";
+            var prefixdate = "Les lettres de motivations et confirmations des voeux doivent être validées dans ";
             if (total_secondes < 0){
                 total_secondes = Math.abs(total_secondes);
                 message.channel.send("Compte à rebours terminé il y a " + total_secondes);
@@ -436,13 +454,17 @@ client.on("message", message =>{
             var heures = Math.floor((total_secondes - (jours * 60 * 60 * 24)) / (60 * 60));
             var minutes = Math.floor((total_secondes - ((jours * 60 * 60 * 24 + heures * 60 * 60))) / 60);
             var secondes = Math.floor(total_secondes - ((jours * 60 * 60 * 24 + heures * 60 * 60 + minutes * 60)));
-        message.channel.send(prefixdate + jours + ' jours ' + heures + ' heures ' + minutes + ' minutes et ' + secondes + ' secondes.');
+        message.channel.send(prefixdate + jours + ' jours ' + heures + ' heures ' + minutes + ' minutes et ' + secondes + ' secondes.').then(sentMessage => {
+            sentMessage.react("⌛")
+                .then(() => sentMessage.react("✅"))
+                .then(() => sentMessage.react("❎"))
+            })
         // var actualisation = setTimeout(compte_a_rebours(date_evenement), 1000);
         }
     compte_a_rebours();
     return}
 
-    if(message.content === prefix + "parcoursup-sadm-cab"){
+    if(message.content === prefix + "parcoursup-adm-cab"){
         function compte_a_rebours(){
             var date_actuelle = new Date();
             var date_evenement = new Date("May 19 23:59:59 2020");
@@ -456,13 +478,17 @@ client.on("message", message =>{
             var heures = Math.floor((total_secondes - (jours * 60 * 60 * 24)) / (60 * 60));
             var minutes = Math.floor((total_secondes - ((jours * 60 * 60 * 24 + heures * 60 * 60))) / 60);
             var secondes = Math.floor(total_secondes - ((jours * 60 * 60 * 24 + heures * 60 * 60 + minutes * 60)));
-        message.channel.send(prefixdate + jours + ' jours ' + heures + ' heures ' + minutes + ' minutes et ' + secondes + ' secondes.');
+        message.channel.send(prefixdate + jours + ' jours ' + heures + ' heures ' + minutes + ' minutes et ' + secondes + ' secondes.').then(sentMessage => {
+            sentMessage.react("⌛")
+            .then(() => sentMessage.react("✅"))
+            .then(() => sentMessage.react("❎"))
+        })
         // var actualisation = setTimeout(compte_a_rebours(date_evenement), 1000);
         }
     compte_a_rebours();
     return}
 
-    if(message.content === prefix + "parcoursup-scompl-cab"){
+    if(message.content === prefix + "parcoursup-compl-cab"){
         function compte_a_rebours(){
             var date_actuelle = new Date();
             var date_evenement = new Date("Jun 25 23:59:59 2020");
@@ -476,7 +502,11 @@ client.on("message", message =>{
             var heures = Math.floor((total_secondes - (jours * 60 * 60 * 24)) / (60 * 60));
             var minutes = Math.floor((total_secondes - ((jours * 60 * 60 * 24 + heures * 60 * 60))) / 60);
             var secondes = Math.floor(total_secondes - ((jours * 60 * 60 * 24 + heures * 60 * 60 + minutes * 60)));
-        message.channel.send(prefixdate + jours + ' jours ' + heures + ' heures ' + minutes + ' minutes et ' + secondes + ' secondes.');
+        message.channel.send(prefixdate + jours + ' jours ' + heures + ' heures ' + minutes + ' minutes et ' + secondes + ' secondes.').then(sentMessage => {
+            sentMessage.react("⌛")
+            .then(() => sentMessage.react("✅"))
+            .then(() => sentMessage.react("❎"))
+        })
         // var actualisation = setTimeout(compte_a_rebours(date_evenement), 1000);
         }
     compte_a_rebours();
@@ -496,7 +526,11 @@ client.on("message", message =>{
             var heures = Math.floor((total_secondes - (jours * 60 * 60 * 24)) / (60 * 60));
             var minutes = Math.floor((total_secondes - ((jours * 60 * 60 * 24 + heures * 60 * 60))) / 60);
             var secondes = Math.floor(total_secondes - ((jours * 60 * 60 * 24 + heures * 60 * 60 + minutes * 60)));
-        message.channel.send(prefixdate + jours + ' jours ' + heures + ' heures ' + minutes + ' minutes et ' + secondes + ' secondes.');
+        message.channel.send(prefixdate + jours + ' jours ' + heures + ' heures ' + minutes + ' minutes et ' + secondes + ' secondes.').then(sentMessage => {
+            sentMessage.react("⌛")
+            .then(() => sentMessage.react("✅"))
+            .then(() => sentMessage.react("❎"))
+        })
         // var actualisation = setTimeout(compte_a_rebours(date_evenement), 1000);
         }
     compte_a_rebours();
@@ -516,42 +550,179 @@ client.on("message", message =>{
             var heures = Math.floor((total_secondes - (jours * 60 * 60 * 24)) / (60 * 60));
             var minutes = Math.floor((total_secondes - ((jours * 60 * 60 * 24 + heures * 60 * 60))) / 60);
             var secondes = Math.floor(total_secondes - ((jours * 60 * 60 * 24 + heures * 60 * 60 + minutes * 60)));
-        message.channel.send(prefixdate + jours + ' jours ' + heures + ' heures ' + minutes + ' minutes et ' + secondes + ' secondes. Je suis vieux, ma mémoire flanche un peu');
+        message.channel.send(prefixdate + jours + ' jours ' + heures + ' heures ' + minutes + ' minutes et ' + secondes + ' secondes. Je suis vieux, ma mémoire flanche un peu').then(sentMessage => {
+            sentMessage.react("⏰")
+            .then(() => sentMessage.react("✅"))
+            .then(() => sentMessage.react("❎"))
+        })
         // var actualisation = setTimeout(compte_a_rebours(date_evenement), 1000);
         }
     compte_a_rebours();
     return}
 
-    const args = message.content.slice(prefix.length).trim().split(/ +/g);
-    var commande = args.shift().toLowerCase();
-    if (commande === 'rps') {
+
+    if(message.content === prefix + "rpshelp"){
+        message.channel.send("Le fameux jeu de \"Rock, paper, scissors\". Vous pouvez jouer en tapant !rps suivi de votre choix. Si vous avez un doute sur l'orthographe, tapez simplement !rps pour la liste des réponses possibles. \n *Le robot ne triche pas, son résultat est généré aléatoirement en même temps que le votre*");
+    return}
+    var args = message.content.slice(prefix.length).trim().split(/ +/g);
+    var command = args.shift().toLowerCase();
+    if (command === 'rps') {
         let replies = ['rock', 'paper', 'scissors'];
         let result = Math.floor((Math.random() * replies.length));
 
         let uReply = args[0];
         if (!uReply) return message.channel.send(`Jouez avec une de ces réponses : \`${replies.join(', ')}\``);
-        if (!replies.includes(uReply)) return message.channel.send(`Seulement ces réponses sont accéptées : \`${replies.join(', ')}\``);
+        if (!replies.includes(uReply)) return message.channel.send(`Seulement ces réponses sont acceptées : \`${replies.join(', ')}\``);
 
         if (replies[result] === uReply) {
             console.log(replies[result]);
-            message.channel.send(replies[result]);
-            return message.channel.send('Nous avons choisi la même chose !');
+            message.channel.send("```" + replies[result] + "```");
+            return message.channel.send('Nous avons choisi la même chose !').then(sentMessage => {
+                sentMessage.react("👍")
+                .then(() => sentMessage.react("👎"))
+            })
         } else if (uReply === 'rock') {
             console.log(replies[result]);
-            message.channel.send(replies[result]);
-            if (replies[result] === 'paper') return message.channel.send('J\'ai gagné !');
-            else return message.channel.send('Tu as gagné !');
+            message.channel.send("```" + replies[result] + "```");
+            if (replies[result] === 'paper') return message.channel.send('J\'ai gagné !').then(sentMessage => {
+                sentMessage.react("👍")
+                .then(() => sentMessage.react("👎"))
+            })
+            else return message.channel.send('Tu as gagné !').then(sentMessage => {
+                sentMessage.react("👍")
+                .then(() => sentMessage.react("👎"))
+            })
         } else if (uReply === 'scissors') {
             console.log(replies[result]);
-            message.channel.send(replies[result]);
-            if (replies[result] === 'rock') return message.channel.send('J\'ai gagné !');
-            else return message.channel.send('Tu as gagné !');
+            message.channel.send("```" + replies[result] + "```");
+            if (replies[result] === 'rock') return message.channel.send('J\'ai gagné !').then(sentMessage => {
+                sentMessage.react("👍")
+                .then(() => sentMessage.react("👎"))
+            })
+            else return message.channel.send('Tu as gagné !').then(sentMessage => {
+                sentMessage.react("👍")
+                .then(() => sentMessage.react("👎"))
+            })
         } else if (uReply === 'paper') {
             console.log(replies[result]);
-            message.channel.send(replies[result]);
-            if (replies[result] === 'scissors') return message.channel.send('J\'ai gagné !');
-            else return message.channel.send('Tu as gagné !');
+            message.channel.send("```" + replies[result] + "```");
+            if (replies[result] === 'scissors') return message.channel.send('J\'ai gagné !').then(sentMessage => {
+                sentMessage.react("👍")
+                .then(() => sentMessage.react("👎"))
+            })
+            else return message.channel.send('Tu as gagné !').then(sentMessage => {
+                sentMessage.react("👍")
+                .then(() => sentMessage.react("👎"))
+            })
         }
     return}
 
+    const ytdl = require('ytdl-core');
+    var args = message.content.slice(prefix.length).split(' ');
+    var command = args.shift().toLowerCase();
+    
+    if (command === 'play') {
+
+        if (message.channel.type !== 'text') return;
+        
+        if (!args.length) {
+            return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
+        }
+
+		const voiceChannel = message.member.voice.channel;
+
+		if (!voiceChannel) {
+			return message.reply(`Veuillez rejoindre un canal audio`);
+		}
+
+		voiceChannel.join().then(connection => {
+			const stream = ytdl(message.content.substring(command.length), { filter: 'audioonly' });
+            const dispatcher = connection.play(stream);
+            dispatcher.on('start', () => {
+                client.user.setStatus("online");
+                client.user.setActivity(message.content.substring(command.length) + " | !help", {type: "PLAYING"})});
+            dispatcher.on('end', () => {
+                voiceChannel.leave()
+                client.user.setActivity("les élèves | !help", {type: "LISTENING"})})
+        });
+    }
+
 });
+
+client.on('message', async message => {
+	if (!message.content.startsWith(prefix) || message.author.bot) return;
+
+	var args = message.content.slice(prefix.length).split(/ +/);
+    var command = args.shift().toLowerCase();
+    const fetch = require('node-fetch');
+    if (command === 'cat') {
+        const { file } = await fetch('https://aws.random.cat/meow').then(response => response.json());
+        message.channel.send(file);
+    }
+
+    const querystring = require('querystring');
+    if (command === 'urban') {
+        if (!args.length) {
+        return message.channel.send('Vous devez fournir un argument selon la formule *!urban [mot recherché]*');
+    }
+	const query = querystring.stringify({ term: args.join(' ') });
+    const { list } = await fetch(`https://api.urbandictionary.com/v0/define?${query}`).then(response => response.json());
+    if (!list.length) {
+        return message.channel.send(`No results found for **${args.join(' ')}**.`);
+    }
+    const [answer] = list;
+
+    const Urbanembed = new Discord.MessageEmbed()
+	    .setColor('#EFFF00')
+	    .setTitle(answer.word)
+	    .setURL(answer.permalink)
+	    .addFields(
+		    { name: 'Definition', value: trim(answer.definition, 1024) },
+		    { name: 'Example', value: trim(answer.example, 1024) },
+		    { name: 'Rating', value: `${answer.thumbs_up} 👍. ${answer.thumbs_down} 👎.` }
+        )
+        .setFooter("Source : urbandictionary | La TL sur Discord | Gonzy | !help");
+    message.channel.send(Urbanembed);
+    }
+
+
+});
+
+client.on('message', function(message){
+    if((message.cleanContent.startsWith("@" + client.user.username) || message.channel.type == 'dm') && client.user.id != message.author.id){
+    var mess = remove(client.user.username, message.cleanContent);
+    console.log(mess);
+    const user = message.author.id;
+    var promise = new Promise(function(resolve, reject) {
+        var request = app.textRequest(mess, {
+            sessionId: user
+        });
+        request.on('response', function(response) {
+            console.log(response);
+            var rep = response.result.fulfillment.speech;
+            resolve(rep);
+        });
+
+        request.on('error', function(error) {
+            resolve(null);
+        });
+
+        request.end();
+    });
+
+    (async function(){
+        var result = await promise;
+        if(result){
+            message.reply(result);
+        } else{
+            message.reply("nothing here");
+        }
+    }());
+
+}
+});
+
+
+function remove(username, text){
+return text.replace("@" + username + " ", "");
+}
